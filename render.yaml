@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: abstract-lobster-house-live
+    name: abstract-lobster-house-confirm
     runtime: node
     plan: free
     buildCommand: npm install
@@ -11,4 +11,4 @@ services:
       - key: NODE_ENV
         value: production
       - key: APP_RELEASE
-        value: svg-lobster-modal-v2
+        value: confirm-menu-flow-v1
