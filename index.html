@@ -521,31 +521,80 @@
       letter-spacing: 0.02em;
     }
 
-    .status-box {
+    .submit-modal {
+      position: fixed;
+      inset: 0;
       display: none;
-      grid-column: 1 / -1;
-      padding: 14px 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(216, 176, 106, 0.24);
-      background: rgba(255, 255, 255, 0.72);
-      font-size: 14px;
-      line-height: 1.7;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(24, 11, 8, 0.58);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
     }
 
-    .status-box.show {
-      display: block;
+    .submit-modal.show {
+      display: flex;
     }
 
-    .status-box.success {
-      color: #245b3d;
-      background: rgba(236, 251, 240, 0.9);
-      border-color: rgba(86, 142, 104, 0.22);
+    .modal-card {
+      width: min(100%, 360px);
+      border-radius: 26px;
+      background: linear-gradient(180deg, #fff8ef 0%, #f6e9d6 100%);
+      border: 1px solid rgba(216, 176, 106, 0.28);
+      box-shadow: 0 24px 70px rgba(24, 11, 8, 0.32);
+      padding: 24px 22px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    .status-box.error {
+    .modal-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 8px;
+      background: linear-gradient(90deg, #7f2c16 0%, #b54c2d 42%, #d8b06a 100%);
+    }
+
+    .modal-icon {
+      width: 64px;
+      height: 64px;
+      margin: 8px auto 14px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      background: rgba(216, 176, 106, 0.16);
+      color: var(--primary-deep);
+    }
+
+    .modal-card.error .modal-icon {
+      background: rgba(166, 63, 31, 0.12);
       color: #8b2f20;
-      background: rgba(255, 244, 241, 0.92);
-      border-color: rgba(166, 63, 31, 0.2);
+    }
+
+    .modal-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-family: "Georgia", "Times New Roman", serif;
+      color: var(--text);
+    }
+
+    .modal-message {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .modal-actions {
+      margin-top: 18px;
+    }
+
+    .modal-actions button {
+      width: 100%;
+      min-height: 48px;
     }
 
     .preview-panel {
@@ -1181,7 +1230,6 @@
             <div class="helper">选好后直接提交，这份选择就会被保存下来。</div>
           </div>
 
-          <div class="status-box" id="submitStatus"></div>
         </form>
       </section>
 
@@ -1219,6 +1267,17 @@
     </section>
   </div>
 
+  <div class="submit-modal" id="submitModal" aria-hidden="true">
+    <div class="modal-card" id="modalCard">
+      <div class="modal-icon" id="modalIcon">✓</div>
+      <h3 class="modal-title" id="modalTitle">已收到你的点单</h3>
+      <p class="modal-message" id="modalMessage">这份选择已经成功提交。</p>
+      <div class="modal-actions">
+        <button type="button" class="submit-btn" id="closeModal">我知道了</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const form = document.getElementById("menuForm");
     const receipt = document.getElementById("receipt");
@@ -1228,7 +1287,12 @@
     const sendOrder = document.getElementById("sendOrder");
     const remarkInput = document.getElementById("remark");
     const nicknameInput = document.getElementById("nickname");
-    const submitStatus = document.getElementById("submitStatus");
+    const submitModal = document.getElementById("submitModal");
+    const modalCard = document.getElementById("modalCard");
+    const modalIcon = document.getElementById("modalIcon");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMessage = document.getElementById("modalMessage");
+    const closeModal = document.getElementById("closeModal");
 
     const selectedFlavorSpice = document.getElementById("selectedFlavorSpice");
     const selectedPortion = document.getElementById("selectedPortion");
@@ -1276,9 +1340,19 @@
       return order;
     }
 
-    function setStatus(message, type) {
-      submitStatus.textContent = message;
-      submitStatus.className = `status-box show ${type}`;
+    function showModal(message, type) {
+      const isSuccess = type === "success";
+      modalCard.className = isSuccess ? "modal-card success" : "modal-card error";
+      modalIcon.textContent = isSuccess ? "✓" : "!";
+      modalTitle.textContent = isSuccess ? "已收到你的点单" : "提交失败";
+      modalMessage.textContent = message;
+      submitModal.classList.add("show");
+      submitModal.setAttribute("aria-hidden", "false");
+    }
+
+    function hideModal() {
+      submitModal.classList.remove("show");
+      submitModal.setAttribute("aria-hidden", "true");
     }
 
     function renderReceipt() {
@@ -1316,9 +1390,9 @@
         }
 
         renderReceipt();
-        setStatus("已收到你的点单", "success");
+        showModal("这份选择已经提交成功。", "success");
       } catch (error) {
-        setStatus(error.message || "提交失败，请稍后再试。", "error");
+        showModal(error.message || "提交失败，请稍后再试。", "error");
       } finally {
         sendOrder.disabled = false;
         sendOrder.textContent = "提交选择";
@@ -1336,13 +1410,18 @@
         receipt.classList.remove("show");
         receiptList.innerHTML = "";
         receiptFooter.textContent = "";
-        submitStatus.className = "status-box";
-        submitStatus.textContent = "";
+        hideModal();
       });
     });
 
     submitOrder.addEventListener("click", renderReceipt);
     sendOrder.addEventListener("click", submitSelection);
+    closeModal.addEventListener("click", hideModal);
+    submitModal.addEventListener("click", (event) => {
+      if (event.target === submitModal) {
+        hideModal();
+      }
+    });
 
     collectOrder();
   </script>
