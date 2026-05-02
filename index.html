@@ -245,6 +245,39 @@
       color: #b86739;
     }
 
+    .menu-photo {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      border-radius: 26px;
+      overflow: hidden;
+      opacity: 0.12;
+      filter: saturate(1.04) contrast(1.02);
+      box-shadow: 0 18px 40px rgba(85, 39, 23, 0.12);
+    }
+
+    .menu-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .menu-photo.top {
+      right: 26px;
+      top: 132px;
+      width: 168px;
+      height: 118px;
+      transform: rotate(-6deg);
+    }
+
+    .menu-photo.bottom {
+      left: 24px;
+      bottom: 126px;
+      width: 136px;
+      height: 96px;
+      transform: rotate(7deg);
+    }
+
     .panel-head {
       display: flex;
       justify-content: space-between;
@@ -493,6 +526,13 @@
       transition: 0.2s ease;
     }
 
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
     button:hover {
       transform: translateY(-1px);
     }
@@ -519,6 +559,22 @@
       color: var(--muted);
       font-size: 14px;
       letter-spacing: 0.02em;
+    }
+
+    .confirm-banner {
+      display: none;
+      grid-column: 1 / -1;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(216, 176, 106, 0.24);
+      background: linear-gradient(180deg, rgba(255, 251, 244, 0.94), rgba(246, 233, 214, 0.98));
+      color: var(--primary-deep);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .confirm-banner.show {
+      display: block;
     }
 
     .submit-modal {
@@ -857,6 +913,20 @@
         line-height: 1.7;
       }
 
+      .menu-photo.top {
+        right: 10px;
+        top: 144px;
+        width: 112px;
+        height: 82px;
+      }
+
+      .menu-photo.bottom {
+        left: 14px;
+        bottom: 144px;
+        width: 96px;
+        height: 72px;
+      }
+
       .preview-panel {
         padding-top: 20px;
       }
@@ -945,6 +1015,12 @@
       <section class="menu-panel">
         <span class="decor decor-lobster">🦞</span>
         <span class="decor decor-sauce">🎨</span>
+        <div class="menu-photo top">
+          <img src="./assets/crayfish-hero-clean.jpg" alt="" />
+        </div>
+        <div class="menu-photo bottom">
+          <img src="./assets/crayfish-hero-clean.jpg" alt="" />
+        </div>
         <div class="panel-head">
           <div>
             <h2>点单配置</h2>
@@ -1230,12 +1306,13 @@
 
           <div class="actions">
             <div class="button-group">
-              <button type="button" class="primary-btn" id="submitOrder">生成我的点单</button>
-              <button type="button" class="submit-btn" id="sendOrder">提交选择</button>
+              <button type="button" class="primary-btn" id="submitOrder">生成确认菜单</button>
+              <button type="button" class="submit-btn" id="sendOrder" disabled>确认并提交</button>
               <button type="reset" class="secondary-btn">重置重选</button>
             </div>
-            <div class="helper">选好后直接提交，这份选择就会被保存下来。</div>
+            <div class="helper">先生成确认菜单，确认没问题后再正式提交。</div>
           </div>
+          <div class="confirm-banner" id="confirmBanner">确认菜单已经生成，请再看一遍口味、分量和备注，没问题再点“确认并提交”。</div>
 
         </form>
       </section>
@@ -1302,11 +1379,13 @@
     const modalTitle = document.getElementById("modalTitle");
     const modalMessage = document.getElementById("modalMessage");
     const closeModal = document.getElementById("closeModal");
+    const confirmBanner = document.getElementById("confirmBanner");
 
     const selectedFlavorSpice = document.getElementById("selectedFlavorSpice");
     const selectedPortion = document.getElementById("selectedPortion");
     const selectedExtras = document.getElementById("selectedExtras");
     const selectedDetails = document.getElementById("selectedDetails");
+    let isReceiptConfirmed = false;
 
     function getCheckedValue(name) {
       return form.querySelector(`input[name="${name}"]:checked`);
@@ -1366,6 +1445,15 @@
       submitModal.setAttribute("aria-hidden", "true");
     }
 
+    function resetConfirmationState() {
+      isReceiptConfirmed = false;
+      sendOrder.disabled = true;
+      confirmBanner.classList.remove("show");
+      receipt.classList.remove("show");
+      receiptList.innerHTML = "";
+      receiptFooter.textContent = "";
+    }
+
     function renderReceipt() {
       const order = collectOrder();
       const lines = [
@@ -1376,11 +1464,18 @@
       ];
 
       receiptList.innerHTML = lines.map((line) => `<li>${line}</li>`).join("");
-      receiptFooter.textContent = "点单已生成，这一页已经整理好你的完整选择。";
+      receiptFooter.textContent = "确认菜单已经生成，检查无误后再正式提交。";
       receipt.classList.add("show");
+      isReceiptConfirmed = true;
+      sendOrder.disabled = false;
+      confirmBanner.classList.add("show");
     }
 
     async function submitSelection() {
+      if (!isReceiptConfirmed) {
+        showModal("请先生成确认菜单，确认没问题后再提交。", "error");
+        return;
+      }
       const order = collectOrder();
       sendOrder.disabled = true;
       sendOrder.textContent = "提交中…";
@@ -1405,22 +1500,29 @@
       } catch (error) {
         showModal(error.message || "提交失败，请稍后再试。", "error");
       } finally {
-        sendOrder.disabled = false;
-        sendOrder.textContent = "提交选择";
+        sendOrder.disabled = !isReceiptConfirmed;
+        sendOrder.textContent = "确认并提交";
       }
     }
 
-    form.addEventListener("change", collectOrder);
-    remarkInput.addEventListener("input", collectOrder);
-    nicknameInput.addEventListener("input", collectOrder);
+    form.addEventListener("change", () => {
+      collectOrder();
+      resetConfirmationState();
+    });
+    remarkInput.addEventListener("input", () => {
+      collectOrder();
+      resetConfirmationState();
+    });
+    nicknameInput.addEventListener("input", () => {
+      collectOrder();
+      resetConfirmationState();
+    });
 
     form.addEventListener("reset", () => {
       requestAnimationFrame(() => {
         nicknameInput.value = "未署名朋友";
         collectOrder();
-        receipt.classList.remove("show");
-        receiptList.innerHTML = "";
-        receiptFooter.textContent = "";
+        resetConfirmationState();
         hideModal();
       });
     });
