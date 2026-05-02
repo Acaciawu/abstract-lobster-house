@@ -1023,8 +1023,7 @@
         </div>
         <div class="panel-head">
           <div>
-            <h2>点单配置</h2>
-            <p>从口味到细节偏好逐项选择，整页按照正式菜单的方式呈现，右侧同步汇总你的本次点单。</p>
+            <h2>点单</h2>
             <div class="panel-kicker">
               <span class="kicker-chip">蒜香浓郁</span>
               <span class="kicker-chip">鲜辣入味</span>
@@ -1037,7 +1036,7 @@
           <section class="section">
             <h3 class="section-title">怎么称呼你</h3>
             <p class="section-tip">留个称呼，方便区分这份点单是谁选的。</p>
-            <input class="text-input" id="nickname" maxlength="20" value="未署名朋友" />
+            <input class="text-input" id="nickname" maxlength="20" placeholder="例如：阿青" required />
           </section>
 
           <section class="section">
@@ -1304,13 +1303,18 @@
             <textarea class="remark-box" id="remark"></textarea>
           </section>
 
+          <section class="receipt full" id="receipt">
+            <h3>确认菜单</h3>
+            <ul id="receiptList"></ul>
+            <p id="receiptFooter"></p>
+          </section>
+
           <div class="actions">
             <div class="button-group">
               <button type="button" class="primary-btn" id="submitOrder">生成确认菜单</button>
               <button type="button" class="submit-btn" id="sendOrder" disabled>确认并提交</button>
               <button type="reset" class="secondary-btn">重置重选</button>
             </div>
-            <div class="helper">先生成确认菜单，确认没问题后再正式提交。</div>
           </div>
           <div class="confirm-banner" id="confirmBanner">确认菜单已经生成，请再看一遍口味、分量和备注，没问题再点“确认并提交”。</div>
 
@@ -1342,11 +1346,6 @@
           </div>
         </div>
 
-        <section class="receipt" id="receipt">
-          <h3>点单预览</h3>
-          <ul id="receiptList"></ul>
-          <p id="receiptFooter"></p>
-        </section>
       </aside>
     </section>
   </div>
@@ -1401,7 +1400,7 @@
 
     function collectOrder() {
       const order = {
-        nickname: nicknameInput.value.trim() || "未署名朋友",
+        nickname: nicknameInput.value.trim(),
         flavor: getCheckedValue("flavor").value,
         spice: getCheckedValue("spice").value,
         portion: getCheckedValue("portion").value,
@@ -1426,6 +1425,16 @@
       selectedDetails.textContent = detailParts.join(" · ");
 
       return order;
+    }
+
+    function validateOrderBeforeConfirm() {
+      if (!nicknameInput.value.trim()) {
+        showModal("请先填写怎么称呼你。", "error");
+        nicknameInput.focus();
+        return false;
+      }
+
+      return true;
     }
 
     function showModal(message, type) {
@@ -1455,8 +1464,13 @@
     }
 
     function renderReceipt() {
+      if (!validateOrderBeforeConfirm()) {
+        return;
+      }
+
       const order = collectOrder();
       const lines = [
+        `称呼：${order.nickname}`,
         `搭配：${order.flavor} · ${order.spice}`,
         `分量：${order.portion}`,
         `配菜：${asText(order.extras, "无")}`,
@@ -1474,6 +1488,9 @@
     async function submitSelection() {
       if (!isReceiptConfirmed) {
         showModal("请先生成确认菜单，确认没问题后再提交。", "error");
+        return;
+      }
+      if (!validateOrderBeforeConfirm()) {
         return;
       }
       const order = collectOrder();
@@ -1520,7 +1537,7 @@
 
     form.addEventListener("reset", () => {
       requestAnimationFrame(() => {
-        nicknameInput.value = "未署名朋友";
+        nicknameInput.value = "";
         collectOrder();
         resetConfirmationState();
         hideModal();
