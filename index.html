@@ -569,6 +569,13 @@
       color: var(--primary-deep);
     }
 
+    .modal-icon img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      display: block;
+    }
+
     .modal-card.error .modal-icon {
       background: rgba(166, 63, 31, 0.12);
       color: #8b2f20;
@@ -1269,7 +1276,9 @@
 
   <div class="submit-modal" id="submitModal" aria-hidden="true">
     <div class="modal-card" id="modalCard">
-      <div class="modal-icon" id="modalIcon">🦞</div>
+      <div class="modal-icon" id="modalIcon">
+        <img src="./assets/lobster-icon.svg" alt="小龙虾图标" />
+      </div>
       <h3 class="modal-title" id="modalTitle">已收到你的点单</h3>
       <p class="modal-message" id="modalMessage">这份选择已经成功提交。</p>
       <div class="modal-actions">
@@ -1343,7 +1352,9 @@
     function showModal(message, type) {
       const isSuccess = type === "success";
       modalCard.className = isSuccess ? "modal-card success" : "modal-card error";
-      modalIcon.textContent = isSuccess ? "🦞" : "!";
+      modalIcon.innerHTML = isSuccess
+        ? '<img src="./assets/lobster-icon.svg" alt="小龙虾图标" />'
+        : "!";
       modalTitle.textContent = isSuccess ? "已收到你的点单" : "提交失败";
       modalMessage.textContent = message;
       submitModal.classList.add("show");
