@@ -1,0 +1,13 @@
+{
+  "name": "abstract-lobster-house",
+  "version": "1.0.0",
+  "private": true,
+  "description": "抽象派小龙虾店点单与结果回收应用",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

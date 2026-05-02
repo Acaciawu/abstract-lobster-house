@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>抽象派小龙虾店</title>
+  <style>
+    :root {
+      --bg: #20100c;
+      --bg-soft: #3a1d17;
+      --card: #fbf3e8;
+      --card-2: #f7ecdd;
+      --line: #dec1a2;
+      --line-soft: rgba(122, 80, 47, 0.14);
+      --primary: #a63f1f;
+      --primary-deep: #6e2410;
+      --gold: #d8b06a;
+      --gold-soft: #f4dfb6;
+      --text: #2c1710;
+      --muted: #7c5e50;
+      --dark-muted: #edd8bf;
+      --shadow: 0 28px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(216, 176, 106, 0.18), transparent 24%),
+        linear-gradient(180deg, #24110d 0%, #341915 35%, #1b0d0a 100%);
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 22px;
+      margin-bottom: 24px;
+    }
+
+    .hero-text,
+    .hero-image,
+    .menu-panel,
+    .preview-panel {
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-text {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 25%),
+        linear-gradient(180deg, #432019 0%, #2b140f 100%);
+      color: #fff3e6;
+      padding: 38px;
+      position: relative;
+      border: 1px solid rgba(216, 176, 106, 0.16);
+    }
+
+    .hero-text::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      bottom: -40px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 203, 112, 0.22), transparent 68%);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1.08;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-text p {
+      margin: 0;
+      color: var(--dark-muted);
+      line-height: 1.95;
+      font-size: 16px;
+      max-width: 560px;
+    }
+
+    .hero-notes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .hero-note {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(216, 176, 106, 0.14);
+      border-radius: 18px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-note::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 0;
+      width: 42px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
+    }
+
+    .hero-note strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .hero-note span {
+      color: var(--dark-muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .hero-image {
+      position: relative;
+      min-height: 360px;
+      background: #210d08;
+      border: 1px solid rgba(216, 176, 106, 0.14);
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero-image::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 170px;
+      height: 92px;
+      background:
+        radial-gradient(circle at top left, rgba(117, 54, 31, 0.24), transparent 46%),
+        linear-gradient(135deg, rgba(55, 25, 17, 0.05) 0%, rgba(39, 17, 12, 0.84) 55%, rgba(31, 13, 9, 0.96) 100%);
+      border-top-left-radius: 34px;
+      pointer-events: none;
+    }
+
+    .image-mask {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(44, 20, 15, 0.84);
+      color: #f7dfbf;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid rgba(216, 176, 106, 0.18);
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) 360px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .menu-panel {
+      background:
+        radial-gradient(circle at 12% 18%, rgba(166, 63, 31, 0.09), transparent 16%),
+        radial-gradient(circle at 88% 26%, rgba(216, 176, 106, 0.12), transparent 18%),
+        radial-gradient(circle at 16% 82%, rgba(166, 63, 31, 0.07), transparent 20%),
+        radial-gradient(circle at top right, rgba(216, 176, 106, 0.12), transparent 22%),
+        linear-gradient(180deg, #fcf6ee 0%, #f7efe4 100%);
+      padding: 32px;
+      position: relative;
+      border: 1px solid rgba(216, 176, 106, 0.2);
+    }
+
+    .menu-panel::before,
+    .preview-panel::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, #7b2913 0%, #b54c2d 40%, #d8b06a 100%);
+    }
+
+    .menu-panel::after,
+    .preview-panel::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(216, 176, 106, 0.12);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    .menu-panel .decor {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.08;
+      filter: saturate(0.8);
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    .menu-panel .decor-lobster {
+      right: 22px;
+      top: 90px;
+      font-size: 120px;
+      transform: rotate(-10deg);
+      color: var(--primary-deep);
+    }
+
+    .menu-panel .decor-sauce {
+      left: 28px;
+      bottom: 60px;
+      font-size: 82px;
+      transform: rotate(8deg);
+      color: #b86739;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 26px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(216, 176, 106, 0.22);
+    }
+
+    .panel-kicker {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .kicker-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fff7ef 0%, #f8ebda 100%);
+      border: 1px solid #e7ccb1;
+      color: var(--primary-deep);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .panel-head h2,
+    .preview-head h2 {
+      margin: 0;
+      font-size: 30px;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .panel-head p,
+    .preview-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .section {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.35)),
+        var(--card-2);
+      border: 1px solid rgba(216, 176, 106, 0.22);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .section.full {
+      grid-column: 1 / -1;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Georgia", "Times New Roman", serif;
+      letter-spacing: 0.03em;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 36px;
+      height: 1px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold) 0%, rgba(216, 176, 106, 0.18) 100%);
+      margin-right: 4px;
+    }
+
+    .section-tip {
+      margin: -2px 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .choice,
+    .tick {
+      position: relative;
+    }
+
+    .choice input,
+    .tick input {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      cursor: pointer;
+    }
+
+    .choice span,
+    .tick span {
+      display: block;
+      min-height: 108px;
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(216, 176, 106, 0.28);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(251, 245, 236, 0.96));
+      transition: 0.24s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tick span {
+      min-height: 86px;
+    }
+
+    .choice span::before,
+    .tick span::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 0;
+      width: 54px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(216, 176, 106, 0.95), transparent 100%);
+    }
+
+    .choice strong,
+    .tick strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 16px;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .choice em,
+    .tick em {
+      display: block;
+      font-style: normal;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .choice input:checked + span,
+    .tick input:checked + span {
+      border-color: rgba(166, 63, 31, 0.6);
+      background: linear-gradient(180deg, #fffaf4 0%, #f6e6d2 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 24px rgba(90, 40, 20, 0.12);
+    }
+
+    .choice input:checked + span::after,
+    .tick input:checked + span::after {
+      content: "已选";
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--primary-deep);
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: rgba(216, 176, 106, 0.16);
+      border: 1px solid rgba(166, 63, 31, 0.12);
+    }
+
+    .compact {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .remark-box {
+      width: 100%;
+      min-height: 124px;
+      resize: vertical;
+      border-radius: 20px;
+      border: 1px solid rgba(216, 176, 106, 0.28);
+      background: rgba(255, 255, 255, 0.82);
+      padding: 18px;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      line-height: 1.8;
+    }
+
+    .text-input {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 18px;
+      border: 1px solid rgba(216, 176, 106, 0.28);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 14px 16px;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    .remark-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(207, 67, 31, 0.08);
+    }
+
+    .text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(207, 67, 31, 0.08);
+    }
+
+    .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding-top: 4px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #7f2c16 0%, var(--primary) 45%, #c98345 100%);
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(80, 29, 15, 0.24);
+    }
+
+    .secondary-btn {
+      background: linear-gradient(180deg, #fffdf9 0%, #f6ebdf 100%);
+      color: var(--text);
+      border: 1px solid rgba(216, 176, 106, 0.26);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #5d2415 0%, #8e391d 42%, #d8b06a 100%);
+      color: #fff8ef;
+      box-shadow: 0 14px 28px rgba(77, 32, 18, 0.24);
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .status-box {
+      display: none;
+      grid-column: 1 / -1;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(216, 176, 106, 0.24);
+      background: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .status-box.show {
+      display: block;
+    }
+
+    .status-box.success {
+      color: #245b3d;
+      background: rgba(236, 251, 240, 0.9);
+      border-color: rgba(86, 142, 104, 0.22);
+    }
+
+    .status-box.error {
+      color: #8b2f20;
+      background: rgba(255, 244, 241, 0.92);
+      border-color: rgba(166, 63, 31, 0.2);
+    }
+
+    .preview-panel {
+      background:
+        radial-gradient(circle at top right, rgba(216, 176, 106, 0.14), transparent 25%),
+        linear-gradient(180deg, #fdf6ec 0%, #f7ead8 100%);
+      padding: 26px 22px 22px;
+      position: sticky;
+      top: 16px;
+      border: 1px solid rgba(216, 176, 106, 0.2);
+    }
+
+    .preview-head {
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(216, 176, 106, 0.22);
+      margin-bottom: 14px;
+    }
+
+    .preview-badge {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(216, 176, 106, 0.16);
+      color: var(--primary-deep);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.12em;
+    }
+
+    .summary-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .summary-item {
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(216, 176, 106, 0.18);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .summary-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .receipt {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(216, 176, 106, 0.2);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(249, 240, 227, 0.92));
+      display: none;
+    }
+
+    .receipt.show {
+      display: block;
+    }
+
+    .receipt h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-family: "Georgia", "Times New Roman", serif;
+      letter-spacing: 0.04em;
+    }
+
+    .receipt ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .receipt p {
+      margin: 10px 0 0;
+      color: var(--primary-deep);
+      font-weight: 700;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 14px, 1180px);
+        padding-top: 12px;
+        padding-bottom: 28px;
+      }
+
+      .hero-text,
+      .menu-panel,
+      .preview-panel {
+        padding: 18px;
+        border-radius: 22px;
+      }
+
+      .hero {
+        gap: 14px;
+      }
+
+      .hero-image {
+        order: -1;
+        min-height: 220px;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 32px;
+        line-height: 1.14;
+      }
+
+      .hero-text p {
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .hero-notes {
+        grid-template-columns: 1fr;
+        margin-top: 18px;
+      }
+
+      .hero-note {
+        padding: 14px;
+      }
+
+      .content {
+        gap: 16px;
+      }
+
+      .menu-panel::after,
+      .preview-panel::after {
+        inset: 10px;
+        border-radius: 16px;
+      }
+
+      .panel-head {
+        margin-bottom: 18px;
+        padding-bottom: 16px;
+      }
+
+      .panel-head h2,
+      .preview-head h2 {
+        font-size: 24px;
+      }
+
+      .panel-head p,
+      .preview-head p {
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .panel-kicker {
+        margin-top: 10px;
+      }
+
+      .kicker-chip {
+        font-size: 11px;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .section {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+
+      .section-tip {
+        margin-bottom: 12px;
+      }
+
+      .choices,
+      .compact {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .choice span,
+      .tick span {
+        min-height: 96px;
+        padding: 14px 12px;
+        border-radius: 18px;
+      }
+
+      .tick span {
+        min-height: 82px;
+      }
+
+      .choice strong,
+      .tick strong {
+        font-size: 15px;
+      }
+
+      .choice em,
+      .tick em {
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .remark-box {
+        min-height: 108px;
+        padding: 14px;
+        border-radius: 18px;
+      }
+
+      .actions {
+        gap: 12px;
+      }
+
+      .button-group {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+        min-height: 50px;
+      }
+
+      .helper {
+        width: 100%;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .preview-panel {
+        padding-top: 20px;
+      }
+
+      .menu-panel .decor-lobster {
+        right: 12px;
+        top: 120px;
+        font-size: 84px;
+      }
+
+      .menu-panel .decor-sauce {
+        left: 18px;
+        bottom: 84px;
+        font-size: 58px;
+      }
+
+      .summary-grid {
+        gap: 10px;
+      }
+
+      .summary-item {
+        padding: 13px 14px;
+      }
+
+      .summary-value {
+        font-size: 15px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .page {
+        width: min(100% - 10px, 1180px);
+      }
+
+      .hero-text,
+      .menu-panel,
+      .preview-panel {
+        padding: 16px;
+        border-radius: 20px;
+      }
+
+      .hero-image {
+        min-height: 188px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .choices,
+      .compact {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="hero-text">
+        <h1>今晚别纠结<br />先把虾点明白</h1>
+        <div class="hero-notes">
+          <div class="hero-note">
+            <strong>招牌推荐</strong>
+            <span>蒜蓉、麻辣、十三香，嗦到最后一只也不想停。</span>
+          </div>
+          <div class="hero-note">
+            <strong>现点现配</strong>
+            <span>辣度、分量、配菜都能自由搭配，按你今天的胃口来。</span>
+          </div>
+          <div class="hero-note">
+            <strong>锅气拉满</strong>
+            <span>蒜香、椒香、油亮酱汁一起上桌，光看就已经想开吃。</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-image">
+        <img src="./assets/crayfish-hero-clean.jpg" alt="抽象派小龙虾店招牌小龙虾" />
+        <span class="image-mask">抽象派招牌菜</span>
+      </div>
+    </section>
+
+    <section class="content">
+      <section class="menu-panel">
+        <span class="decor decor-lobster">🦞</span>
+        <span class="decor decor-sauce">🎨</span>
+        <div class="panel-head">
+          <div>
+            <h2>点单配置</h2>
+            <p>从口味到细节偏好逐项选择，整页按照正式菜单的方式呈现，右侧同步汇总你的本次点单。</p>
+            <div class="panel-kicker">
+              <span class="kicker-chip">蒜香浓郁</span>
+              <span class="kicker-chip">鲜辣入味</span>
+              <span class="kicker-chip">现煮上桌</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="menuForm">
+          <section class="section">
+            <h3 class="section-title">怎么称呼你</h3>
+            <p class="section-tip">留个称呼，方便区分这份点单是谁选的。</p>
+            <input class="text-input" id="nickname" maxlength="20" value="未署名朋友" />
+          </section>
+
+          <section class="section">
+            <h3 class="section-title">口味</h3>
+            <p class="section-tip">选你今晚最想嗦的一锅。</p>
+            <div class="choices">
+              <label class="choice">
+                <input type="radio" name="flavor" value="蒜蓉金汤" checked />
+                <span>
+                  <strong>蒜蓉金汤</strong>
+                  <em>蒜香厚一点，适合边聊天边下手。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="flavor" value="经典麻辣" />
+                <span>
+                  <strong>经典麻辣</strong>
+                  <em>夜宵标准答案，香辣上头。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="flavor" value="十三香" />
+                <span>
+                  <strong>十三香</strong>
+                  <em>香料层次足，越吃越有劲。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="flavor" value="冰镇柠檬" />
+                <span>
+                  <strong>冰镇柠檬</strong>
+                  <em>清爽开胃，夏夜吃起来很轻快。</em>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <h3 class="section-title">辣度</h3>
+            <p class="section-tip">别高估自己，也别低估这一锅。</p>
+            <div class="choices">
+              <label class="choice">
+                <input type="radio" name="spice" value="不辣" />
+                <span>
+                  <strong>不辣</strong>
+                  <em>只吃鲜味，完全不冒险。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="spice" value="微辣" checked />
+                <span>
+                  <strong>微辣</strong>
+                  <em>有点意思，但还能优雅聊天。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="spice" value="中辣" />
+                <span>
+                  <strong>中辣</strong>
+                  <em>非常适合“我可以”的嘴硬选手。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="spice" value="特辣" />
+                <span>
+                  <strong>特辣</strong>
+                  <em>今夜不是嗦虾，是挑战人生。</em>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <h3 class="section-title">分量</h3>
+            <p class="section-tip">按今晚食量来选，不够再加会后悔。</p>
+            <div class="choices">
+              <label class="choice">
+                <input type="radio" name="portion" value="1 斤装" />
+                <span>
+                  <strong>1 斤装</strong>
+                  <em>轻量试探，适合先开个胃。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="portion" value="2 斤装" checked />
+                <span>
+                  <strong>2 斤装</strong>
+                  <em>最稳妥的热门分量，吃起来刚刚好。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="portion" value="3 斤装" />
+                <span>
+                  <strong>3 斤装</strong>
+                  <em>今晚不聊减肥，狠狠干饭。</em>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <h3 class="section-title">灵魂搭子</h3>
+            <p class="section-tip">锅底不浪费，配菜也得有存在感。</p>
+            <div class="choices compact">
+              <label class="tick">
+                <input type="checkbox" name="extra" value="手工年糕" checked />
+                <span>
+                  <strong>手工年糕</strong>
+                  <em>吸汁第一名。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="extra" value="黄瓜条" checked />
+                <span>
+                  <strong>黄瓜条</strong>
+                  <em>清口补位选手。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="extra" value="宽粉" />
+                <span>
+                  <strong>宽粉</strong>
+                  <em>负责把汤汁打包带走。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="extra" value="玉米段" />
+                <span>
+                  <strong>玉米段</strong>
+                  <em>甜口补充，啃着很快乐。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="extra" value="午餐肉" />
+                <span>
+                  <strong>午餐肉</strong>
+                  <em>咸香顶饱，经典下锅款。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="extra" value="肥牛卷" />
+                <span>
+                  <strong>肥牛卷</strong>
+                  <em>油润鲜香，吸汁很稳。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="extra" value="鹌鹑蛋" />
+                <span>
+                  <strong>鹌鹑蛋</strong>
+                  <em>一口一个，越煮越入味。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="extra" value="牛蛙" />
+                <span>
+                  <strong>牛蛙</strong>
+                  <em>肉感扎实，适合重口味。</em>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section full">
+            <h3 class="section-title">忌口与偏好</h3>
+            <p class="section-tip">常见点单小要求，直接勾上就行。</p>
+            <div class="choices compact">
+              <label class="tick">
+                <input type="checkbox" name="preference" value="不要葱花" />
+                <span>
+                  <strong>不要葱花</strong>
+                  <em>葱花退退退。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="preference" value="不要香菜" />
+                <span>
+                  <strong>不要香菜</strong>
+                  <em>香菜阵营请绕路。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="preference" value="蒜多一点" checked />
+                <span>
+                  <strong>蒜多一点</strong>
+                  <em>蒜香爱好者默认快乐。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="preference" value="少油一点" />
+                <span>
+                  <strong>少油一点</strong>
+                  <em>吃得尽兴也要嘴上克制。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="preference" value="汁多一点" checked />
+                <span>
+                  <strong>汁多一点</strong>
+                  <em>方便拌面拌粉拌快乐。</em>
+                </span>
+              </label>
+              <label class="tick">
+                <input type="checkbox" name="preference" value="少麻一点" />
+                <span>
+                  <strong>少麻一点</strong>
+                  <em>保住舌头的基本知觉。</em>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section full">
+            <h3 class="section-title">今晚谁来买单</h3>
+            <p class="section-tip">不是价格，是今晚这顿饭的人情归属。</p>
+            <div class="choices compact">
+              <label class="choice">
+                <input type="radio" name="payer" value="我请客" checked />
+                <span>
+                  <strong>我请客</strong>
+                  <em>今天直接大方到底。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="payer" value="我洗虾头" />
+                <span>
+                  <strong>我洗虾头</strong>
+                  <em>出力型付出，也算贡献。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="payer" value="我只管吃" />
+                <span>
+                  <strong>我只管吃</strong>
+                  <em>把态度直接写在明面上。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="payer" value="我洗碗" />
+                <span>
+                  <strong>我洗碗</strong>
+                  <em>饭后劳动，情绪稳定。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="payer" value="我剥壳" />
+                <span>
+                  <strong>我剥壳</strong>
+                  <em>服务型人格高光时刻。</em>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="payer" value="我倒立" />
+                <span>
+                  <strong>我倒立</strong>
+                  <em>如果真选这个，请先热身。</em>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section full">
+            <h3 class="section-title">备注</h3>
+            <textarea class="remark-box" id="remark"></textarea>
+          </section>
+
+          <div class="actions">
+            <div class="button-group">
+              <button type="button" class="primary-btn" id="submitOrder">生成我的点单</button>
+              <button type="button" class="submit-btn" id="sendOrder">提交选择</button>
+              <button type="reset" class="secondary-btn">重置重选</button>
+            </div>
+            <div class="helper">选好后直接提交，这份选择就会被保存下来。</div>
+          </div>
+
+          <div class="status-box" id="submitStatus"></div>
+        </form>
+      </section>
+
+      <aside class="preview-panel">
+        <div class="preview-head">
+          <span class="preview-badge">最后预览</span>
+          <h2>当前选择</h2>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="summary-label">口味与辣度</span>
+            <span class="summary-value" id="selectedFlavorSpice">蒜蓉金汤 · 微辣</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">分量</span>
+            <span class="summary-value" id="selectedPortion">2 斤装</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">配菜加料</span>
+            <span class="summary-value" id="selectedExtras">手工年糕、黄瓜条</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">其他说明</span>
+            <span class="summary-value" id="selectedDetails">蒜多一点、汁多一点 · 我请客</span>
+          </div>
+        </div>
+
+        <section class="receipt" id="receipt">
+          <h3>点单预览</h3>
+          <ul id="receiptList"></ul>
+          <p id="receiptFooter"></p>
+        </section>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const form = document.getElementById("menuForm");
+    const receipt = document.getElementById("receipt");
+    const receiptList = document.getElementById("receiptList");
+    const receiptFooter = document.getElementById("receiptFooter");
+    const submitOrder = document.getElementById("submitOrder");
+    const sendOrder = document.getElementById("sendOrder");
+    const remarkInput = document.getElementById("remark");
+    const nicknameInput = document.getElementById("nickname");
+    const submitStatus = document.getElementById("submitStatus");
+
+    const selectedFlavorSpice = document.getElementById("selectedFlavorSpice");
+    const selectedPortion = document.getElementById("selectedPortion");
+    const selectedExtras = document.getElementById("selectedExtras");
+    const selectedDetails = document.getElementById("selectedDetails");
+
+    function getCheckedValue(name) {
+      return form.querySelector(`input[name="${name}"]:checked`);
+    }
+
+    function getCheckedList(name) {
+      return [...form.querySelectorAll(`input[name="${name}"]:checked`)].map((item) => item.value);
+    }
+
+    function asText(list, emptyText) {
+      return list.length ? list.join("、") : emptyText;
+    }
+
+    function collectOrder() {
+      const order = {
+        nickname: nicknameInput.value.trim() || "未署名朋友",
+        flavor: getCheckedValue("flavor").value,
+        spice: getCheckedValue("spice").value,
+        portion: getCheckedValue("portion").value,
+        extras: getCheckedList("extra"),
+        preferences: getCheckedList("preference"),
+        payer: getCheckedValue("payer").value,
+        remark: remarkInput.value.trim()
+      };
+
+      const detailParts = [];
+      if (order.preferences.length) {
+        detailParts.push(order.preferences.join("、"));
+      }
+      detailParts.push(order.payer);
+      if (order.remark) {
+        detailParts.push(order.remark);
+      }
+
+      selectedFlavorSpice.textContent = `${order.flavor} · ${order.spice}`;
+      selectedPortion.textContent = order.portion;
+      selectedExtras.textContent = asText(order.extras, "这锅先不加配菜");
+      selectedDetails.textContent = detailParts.join(" · ");
+
+      return order;
+    }
+
+    function setStatus(message, type) {
+      submitStatus.textContent = message;
+      submitStatus.className = `status-box show ${type}`;
+    }
+
+    function renderReceipt() {
+      const order = collectOrder();
+      const lines = [
+        `搭配：${order.flavor} · ${order.spice}`,
+        `分量：${order.portion}`,
+        `配菜：${asText(order.extras, "无")}`,
+        `说明：${[asText(order.preferences, "无额外偏好"), order.payer, order.remark || "无备注"].join(" · ")}`
+      ];
+
+      receiptList.innerHTML = lines.map((line) => `<li>${line}</li>`).join("");
+      receiptFooter.textContent = "点单已生成，这一页已经整理好你的完整选择。";
+      receipt.classList.add("show");
+    }
+
+    async function submitSelection() {
+      const order = collectOrder();
+      sendOrder.disabled = true;
+      sendOrder.textContent = "提交中…";
+
+      try {
+        const response = await fetch("/api/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(order)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "提交失败，请稍后再试。");
+        }
+
+        renderReceipt();
+        setStatus("已收到你的点单", "success");
+      } catch (error) {
+        setStatus(error.message || "提交失败，请稍后再试。", "error");
+      } finally {
+        sendOrder.disabled = false;
+        sendOrder.textContent = "提交选择";
+      }
+    }
+
+    form.addEventListener("change", collectOrder);
+    remarkInput.addEventListener("input", collectOrder);
+    nicknameInput.addEventListener("input", collectOrder);
+
+    form.addEventListener("reset", () => {
+      requestAnimationFrame(() => {
+        nicknameInput.value = "未署名朋友";
+        collectOrder();
+        receipt.classList.remove("show");
+        receiptList.innerHTML = "";
+        receiptFooter.textContent = "";
+        submitStatus.className = "status-box";
+        submitStatus.textContent = "";
+      });
+    });
+
+    submitOrder.addEventListener("click", renderReceipt);
+    sendOrder.addEventListener("click", submitSelection);
+
+    collectOrder();
+  </script>
+</body>
+</html>

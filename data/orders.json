@@ -1,0 +1,21 @@
+[
+  {
+    "id": "order_1777693510927_imwk8j",
+    "nickname": "哈哈",
+    "flavor": "冰镇柠檬",
+    "spice": "特辣",
+    "portion": "3 斤装",
+    "extras": [
+      "手工年糕",
+      "黄瓜条",
+      "宽粉"
+    ],
+    "preferences": [
+      "蒜多一点",
+      "汁多一点"
+    ],
+    "payer": "我请客",
+    "remark": "",
+    "submittedAt": "2026-05-02T03:45:10.927Z"
+  }
+]
