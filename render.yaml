@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: abstract-lobster-house-final
+    name: abstract-lobster-house-clean
     runtime: node
     plan: free
     buildCommand: npm install
@@ -11,4 +11,4 @@ services:
       - key: NODE_ENV
         value: production
       - key: APP_RELEASE
-        value: confirm-menu-flow-v2
+        value: clean-no-preview-v1
