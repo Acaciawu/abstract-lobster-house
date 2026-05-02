@@ -55,8 +55,7 @@
 
     .hero-text,
     .hero-image,
-    .menu-panel,
-    .preview-panel {
+    .menu-panel {
       border-radius: 28px;
       overflow: hidden;
       box-shadow: var(--shadow);
@@ -182,7 +181,7 @@
 
     .content {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) 360px;
+      grid-template-columns: minmax(0, 1fr);
       gap: 22px;
       align-items: start;
     }
@@ -199,8 +198,7 @@
       border: 1px solid rgba(216, 176, 106, 0.2);
     }
 
-    .menu-panel::before,
-    .preview-panel::before {
+    .menu-panel::before {
       content: "";
       position: absolute;
       left: 0;
@@ -210,8 +208,7 @@
       background: linear-gradient(90deg, #7b2913 0%, #b54c2d 40%, #d8b06a 100%);
     }
 
-    .menu-panel::after,
-    .preview-panel::after {
+    .menu-panel::after {
       content: "";
       position: absolute;
       inset: 14px;
@@ -660,63 +657,6 @@
       min-height: 48px;
     }
 
-    .preview-panel {
-      background:
-        radial-gradient(circle at top right, rgba(216, 176, 106, 0.14), transparent 25%),
-        linear-gradient(180deg, #fdf6ec 0%, #f7ead8 100%);
-      padding: 26px 22px 22px;
-      position: sticky;
-      top: 16px;
-      border: 1px solid rgba(216, 176, 106, 0.2);
-    }
-
-    .preview-head {
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(216, 176, 106, 0.22);
-      margin-bottom: 14px;
-    }
-
-    .preview-badge {
-      display: inline-flex;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(216, 176, 106, 0.16);
-      color: var(--primary-deep);
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      letter-spacing: 0.12em;
-    }
-
-    .summary-grid {
-      display: grid;
-      gap: 10px;
-    }
-
-    .summary-item {
-      padding: 13px 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.76);
-      border: 1px solid rgba(216, 176, 106, 0.18);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    }
-
-    .summary-label {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 5px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .summary-value {
-      display: block;
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1.55;
-    }
-
     .receipt {
       margin-top: 14px;
       padding: 16px;
@@ -758,9 +698,6 @@
         grid-template-columns: 1fr;
       }
 
-      .preview-panel {
-        position: static;
-      }
     }
 
     @media (max-width: 720px) {
@@ -771,8 +708,7 @@
       }
 
       .hero-text,
-      .menu-panel,
-      .preview-panel {
+      .menu-panel {
         padding: 18px;
         border-radius: 22px;
       }
@@ -810,8 +746,7 @@
         gap: 16px;
       }
 
-      .menu-panel::after,
-      .preview-panel::after {
+      .menu-panel::after {
         inset: 10px;
         border-radius: 16px;
       }
@@ -821,13 +756,11 @@
         padding-bottom: 16px;
       }
 
-      .panel-head h2,
-      .preview-head h2 {
+      .panel-head h2 {
         font-size: 24px;
       }
 
-      .panel-head p,
-      .preview-head p {
+      .panel-head p {
         font-size: 14px;
         line-height: 1.7;
       }
@@ -927,10 +860,6 @@
         height: 72px;
       }
 
-      .preview-panel {
-        padding-top: 20px;
-      }
-
       .menu-panel .decor-lobster {
         right: 12px;
         top: 120px;
@@ -943,17 +872,6 @@
         font-size: 58px;
       }
 
-      .summary-grid {
-        gap: 10px;
-      }
-
-      .summary-item {
-        padding: 13px 14px;
-      }
-
-      .summary-value {
-        font-size: 15px;
-      }
     }
 
     @media (max-width: 420px) {
@@ -962,8 +880,7 @@
       }
 
       .hero-text,
-      .menu-panel,
-      .preview-panel {
+      .menu-panel {
         padding: 16px;
         border-radius: 20px;
       }
@@ -1321,32 +1238,6 @@
         </form>
       </section>
 
-      <aside class="preview-panel">
-        <div class="preview-head">
-          <span class="preview-badge">最后预览</span>
-          <h2>当前选择</h2>
-        </div>
-
-        <div class="summary-grid">
-          <div class="summary-item">
-            <span class="summary-label">口味与辣度</span>
-            <span class="summary-value" id="selectedFlavorSpice">蒜蓉金汤 · 微辣</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">分量</span>
-            <span class="summary-value" id="selectedPortion">2 斤装</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">配菜加料</span>
-            <span class="summary-value" id="selectedExtras">手工年糕、黄瓜条</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">其他说明</span>
-            <span class="summary-value" id="selectedDetails">蒜多一点、汁多一点 · 我请客</span>
-          </div>
-        </div>
-
-      </aside>
     </section>
   </div>
 
@@ -1380,10 +1271,6 @@
     const closeModal = document.getElementById("closeModal");
     const confirmBanner = document.getElementById("confirmBanner");
 
-    const selectedFlavorSpice = document.getElementById("selectedFlavorSpice");
-    const selectedPortion = document.getElementById("selectedPortion");
-    const selectedExtras = document.getElementById("selectedExtras");
-    const selectedDetails = document.getElementById("selectedDetails");
     let isReceiptConfirmed = false;
 
     function getCheckedValue(name) {
@@ -1418,11 +1305,6 @@
       if (order.remark) {
         detailParts.push(order.remark);
       }
-
-      selectedFlavorSpice.textContent = `${order.flavor} · ${order.spice}`;
-      selectedPortion.textContent = order.portion;
-      selectedExtras.textContent = asText(order.extras, "这锅先不加配菜");
-      selectedDetails.textContent = detailParts.join(" · ");
 
       return order;
     }
